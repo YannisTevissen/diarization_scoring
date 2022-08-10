@@ -480,13 +480,26 @@ def der(ref_turns, sys_turns, collar=0.0, ignore_overlaps=False, uem=None):
     with np.errstate(invalid='ignore', divide='ignore'):
         error_times = miss_speaker_times + fa_speaker_times + error_speaker_times
         ders = error_times / scored_speaker_times
-    ders[np.isnan(ders)] = 0 # Numerator and denominator both 0.
-    ders[np.isinf(ders)] = 1 # Numerator > 0, but denominator = 0.
-    ders *= 100. # Convert to percent.
+        der_ms = miss_speaker_times / scored_speaker_times
+        der_fa = fa_speaker_times / scored_speaker_times
+        der_cs = error_speaker_times / scored_speaker_times
+
+    for metric in [ders, der_ms, der_fa, der_cs]:
+        metric[np.isnan(metric)] = 0 # Numerator and denominator both 0.
+        metric[np.isinf(metric)] = 1 # Numerator > 0, but denominator = 0.
+        metric *= 100. # Convert to percent.
 
     # Reconcile with UEM, keeping in mind that in the edge case where no
     # reference turns are observed for a file, md-eval doesn't report results
     # for said file.
+    file_to_der, global_der = get_file_to(ders, file_ids, uem, sys_turns)
+    file_to_ms, global_ms = get_file_to(der_ms, file_ids, uem, sys_turns)
+    file_to_fa, global_fa = get_file_to(der_fa, file_ids, uem, sys_turns)
+    file_to_cf, global_cf = get_file_to(der_cs, file_ids, uem, sys_turns)
+
+    return file_to_der, file_to_ms, file_to_fa, file_to_cf, global_der, global_ms, global_fa, global_cf
+
+def get_file_to(ders, file_ids, uem, sys_turns):
     file_to_der_base = dict(zip(file_ids, ders))
     file_to_der = {}
     for file_id in uem:
@@ -501,9 +514,7 @@ def der(ref_turns, sys_turns, collar=0.0, ignore_overlaps=False, uem=None):
             der = 100. if n_sys_turns else 0.0
         file_to_der[file_id] = der
     global_der = file_to_der_base['ALL']
-
     return file_to_der, global_der
-
 
 def jer(file_to_ref_durs, file_to_sys_durs, file_to_cm, min_ref_dur=0):
     """Return Jacard error rate.

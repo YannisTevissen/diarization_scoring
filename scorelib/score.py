@@ -96,7 +96,7 @@ def flatten_labels(labels):
 
 class Scores(namedtuple(
         'Scores',
-        ['file_id', 'der', 'jer', 'bcubed_precision', 'bcubed_recall',
+        ['file_id', 'der', 'ms', 'fa', 'cf', 'jer', 'bcubed_precision', 'bcubed_recall',
          'bcubed_f1', 'tau_ref_sys', 'tau_sys_ref', 'ce_ref_sys',
          'ce_sys_ref', 'mi', 'nmi'])):
     """Structure containing metrics.
@@ -228,7 +228,7 @@ def score(ref_turns, sys_turns, uem, step=0.010, nats=False, jer_min_ref_dur=0.0
     # consistency with how the clustering metrics were computed in DIHARD I.
 
     # Compute DER. This bit is slow as it relies on NIST's perl script.
-    file_to_der, global_der = metrics.der(
+    file_to_der, file_to_ms, file_to_fa, file_to_cf, global_der, global_ms, global_fa, global_cf = metrics.der(
         ref_turns, sys_turns, uem=uem, **kwargs)
 
     # Compute JER.
@@ -236,7 +236,7 @@ def score(ref_turns, sys_turns, uem, step=0.010, nats=False, jer_min_ref_dur=0.0
         file_to_ref_durs, file_to_sys_durs, file_to_jer_cm, jer_min_ref_dur)
 
     # Compute clustering metrics.
-    def compute_metrics(fid, cm, der, jer):
+    def compute_metrics(fid, cm, der, ms, fa, cf, jer):
         bcubed_precision, bcubed_recall, bcubed_f1 = metrics.bcubed(
             None, None, cm)
         tau_ref_sys, tau_sys_ref = metrics.goodman_kruskal_tau(
@@ -245,13 +245,14 @@ def score(ref_turns, sys_turns, uem, step=0.010, nats=False, jer_min_ref_dur=0.0
         ce_sys_ref = metrics.conditional_entropy(None, None, cm.T, nats)
         mi, nmi = metrics.mutual_information(None, None, cm, nats)
         return Scores(
-            fid, der, jer, bcubed_precision, bcubed_recall, bcubed_f1,
+            fid, der, ms, fa, cf, jer, bcubed_precision, bcubed_recall, bcubed_f1,
             tau_ref_sys, tau_sys_ref, ce_ref_sys, ce_sys_ref, mi, nmi)
+
     file_scores = []
     for file_id, cm in iteritems(file_to_cm):
         file_scores.append(compute_metrics(
-            file_id, cm, file_to_der[file_id], jer=file_to_jer[file_id]))
+            file_id, cm, file_to_der[file_id], file_to_ms[file_id], file_to_fa[file_id], file_to_cf[file_id], jer=file_to_jer[file_id]))
     global_scores = compute_metrics(
-        '*** OVERALL ***', global_cm, global_der, global_jer)
+        '*** OVERALL ***', global_cm, global_der, global_ms, global_fa, global_cf, global_jer)
 
     return file_scores, global_scores
