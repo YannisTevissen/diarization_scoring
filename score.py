@@ -182,6 +182,9 @@ def print_table(file_scores, global_scores, n_digits=2,
     """
     col_names = ['File',
                  'DER', # Diarization error rate.
+                 'Missed Speech',
+                 'False Alarm',
+                 'Speaker Confusion',
                  'JER', # Jaccard error rate.
                  'B3-Precision', # B-cubed precision.
                  'B3-Recall', # B-cubed recall.
