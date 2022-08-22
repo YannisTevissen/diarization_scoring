@@ -13,7 +13,7 @@ import tempfile
 import numpy as np
 from scipy.optimize import linear_sum_assignment
 from scipy.sparse import coo_matrix, issparse
-
+import math
 from .rttm import write_rttm
 from .uem import gen_uem, write_uem
 from .utils import clip, xor
@@ -483,8 +483,9 @@ def der(ref_turns, sys_turns, collar=0.0, ignore_overlaps=False, uem=None):
         der_ms = miss_speaker_times / scored_speaker_times
         der_fa = fa_speaker_times / scored_speaker_times
         der_cs = error_speaker_times / scored_speaker_times
+        der_em = 2.58*math.sqrt((ders*(1-ders))/len(ref_turns))
 
-    for metric in [ders, der_ms, der_fa, der_cs]:
+    for metric in [ders, der_em, der_ms, der_fa, der_cs]:
         metric[np.isnan(metric)] = 0 # Numerator and denominator both 0.
         metric[np.isinf(metric)] = 1 # Numerator > 0, but denominator = 0.
         metric *= 100. # Convert to percent.
@@ -496,8 +497,9 @@ def der(ref_turns, sys_turns, collar=0.0, ignore_overlaps=False, uem=None):
     file_to_ms, global_ms = get_file_to(der_ms, file_ids, uem, sys_turns)
     file_to_fa, global_fa = get_file_to(der_fa, file_ids, uem, sys_turns)
     file_to_cf, global_cf = get_file_to(der_cs, file_ids, uem, sys_turns)
+    file_to_em, global_em = get_file_to(der_cs, file_ids, uem, sys_turns)
 
-    return file_to_der, file_to_ms, file_to_fa, file_to_cf, global_der, global_ms, global_fa, global_cf
+    return file_to_der, file_to_em, file_to_ms, file_to_fa, file_to_cf, global_der, global_em, global_ms, global_fa, global_cf
 
 def get_file_to(ders, file_ids, uem, sys_turns):
     file_to_der_base = dict(zip(file_ids, ders))

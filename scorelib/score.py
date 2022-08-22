@@ -228,7 +228,7 @@ def score(ref_turns, sys_turns, uem, step=0.010, nats=False, jer_min_ref_dur=0.0
     # consistency with how the clustering metrics were computed in DIHARD I.
 
     # Compute DER. This bit is slow as it relies on NIST's perl script.
-    file_to_der, file_to_ms, file_to_fa, file_to_cf, global_der, global_ms, global_fa, global_cf = metrics.der(
+    file_to_der, file_to_derem, file_to_ms, file_to_fa, file_to_cf, global_der, global_derem, global_ms, global_fa, global_cf = metrics.der(
         ref_turns, sys_turns, uem=uem, **kwargs)
 
     # Compute JER.

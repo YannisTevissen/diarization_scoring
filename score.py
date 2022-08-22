@@ -182,6 +182,7 @@ def print_table(file_scores, global_scores, n_digits=2,
     """
     col_names = ['File',
                  'DER', # Diarization error rate.
+                 'DER error margin',
                  'Missed Speech',
                  'False Alarm',
                  'Speaker Confusion',
