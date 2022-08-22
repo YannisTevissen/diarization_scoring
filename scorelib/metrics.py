@@ -483,6 +483,7 @@ def der(ref_turns, sys_turns, collar=0.0, ignore_overlaps=False, uem=None):
         der_ms = miss_speaker_times / scored_speaker_times
         der_fa = fa_speaker_times / scored_speaker_times
         der_cs = error_speaker_times / scored_speaker_times
+        print(ders, len(ref_turns))
         der_em = 2.58*math.sqrt((ders*(1-ders))/len(ref_turns))
 
     for metric in [ders, der_em, der_ms, der_fa, der_cs]:
