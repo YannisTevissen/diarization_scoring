@@ -499,6 +499,7 @@ def der(ref_turns, sys_turns, collar=0.0, ignore_overlaps=False, uem=None):
     file_to_cf, global_cf = get_file_to(der_cs, file_ids, uem, sys_turns)
     file_to_em, _ = get_file_to(der_cs, file_ids, uem, sys_turns)
 
+    print(global_der, len(ref_turns))
     global_em = 2.58*math.sqrt((global_der*(1-global_der))/len(ref_turns))
 
 
