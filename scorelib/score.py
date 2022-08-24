@@ -251,7 +251,7 @@ def score(ref_turns, sys_turns, uem, step=0.010, nats=False, jer_min_ref_dur=0.0
     file_scores = []
     for file_id, cm in iteritems(file_to_cm):
         file_scores.append(compute_metrics(
-            file_id, cm, file_to_der[file_id], file_to_ms[file_id], file_to_fa[file_id], file_to_cf[file_id], jer=file_to_jer[file_id]))
+            file_id, cm, file_to_der[file_id], file_to_derem[file_id], file_to_ms[file_id], file_to_fa[file_id], file_to_cf[file_id], jer=file_to_jer[file_id]))
     global_scores = compute_metrics(
         '*** OVERALL ***', global_cm, global_der, global_derem, global_ms, global_fa, global_cf, global_jer)
 
