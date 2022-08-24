@@ -236,7 +236,7 @@ def score(ref_turns, sys_turns, uem, step=0.010, nats=False, jer_min_ref_dur=0.0
         file_to_ref_durs, file_to_sys_durs, file_to_jer_cm, jer_min_ref_dur)
 
     # Compute clustering metrics.
-    def compute_metrics(fid, cm, der, ms, fa, cf, jer):
+    def compute_metrics(fid, cm, der, em, ms, fa, cf, jer):
         bcubed_precision, bcubed_recall, bcubed_f1 = metrics.bcubed(
             None, None, cm)
         tau_ref_sys, tau_sys_ref = metrics.goodman_kruskal_tau(
@@ -245,7 +245,7 @@ def score(ref_turns, sys_turns, uem, step=0.010, nats=False, jer_min_ref_dur=0.0
         ce_sys_ref = metrics.conditional_entropy(None, None, cm.T, nats)
         mi, nmi = metrics.mutual_information(None, None, cm, nats)
         return Scores(
-            fid, der, ms, fa, cf, jer, bcubed_precision, bcubed_recall, bcubed_f1,
+            fid, der, em, ms, fa, cf, jer, bcubed_precision, bcubed_recall, bcubed_f1,
             tau_ref_sys, tau_sys_ref, ce_ref_sys, ce_sys_ref, mi, nmi)
 
     file_scores = []
