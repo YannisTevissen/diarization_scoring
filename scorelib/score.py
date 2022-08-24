@@ -96,7 +96,7 @@ def flatten_labels(labels):
 
 class Scores(namedtuple(
         'Scores',
-        ['file_id', 'der', 'ms', 'fa', 'cf', 'jer', 'bcubed_precision', 'bcubed_recall',
+        ['file_id', 'der', 'em', 'ms', 'fa', 'cf', 'jer', 'bcubed_precision', 'bcubed_recall',
          'bcubed_f1', 'tau_ref_sys', 'tau_sys_ref', 'ce_ref_sys',
          'ce_sys_ref', 'mi', 'nmi'])):
     """Structure containing metrics.
